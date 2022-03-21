@@ -1,0 +1,102 @@
+name:                mindra
+version:             0.0.1
+github:              "rorokimdim/mindra"
+license:             BSD3
+author:              "Amit Shrestha"
+copyright:           "2022 Amit Shrestha"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/rorokimdim/mindra#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- bytestring
+- colour
+- containers
+- diagrams
+- diagrams-core
+- diagrams-lib
+- diagrams-svg
+- gloss
+- gloss-juicy
+- mtl
+- megaparsec
+- svg-builder
+- text
+- unordered-containers
+
+library:
+  source-dirs: src
+
+default-extensions:
+- BangPatterns
+- DeriveAnyClass
+- DeriveFoldable
+- DeriveFunctor
+- DeriveGeneric
+- DeriveLift
+- DeriveTraversable
+- DerivingStrategies
+- DuplicateRecordFields
+- FlexibleContexts
+- FlexibleInstances
+- GADTs
+- GeneralizedNewtypeDeriving
+- LambdaCase
+- MultiParamTypeClasses
+- NoMonomorphismRestriction
+- OverloadedStrings
+- QuasiQuotes
+- RankNTypes
+- RecordWildCards
+- ScopedTypeVariables
+- StandaloneDeriving
+- TypeApplications
+- TypeFamilies
+
+executables:
+  mindra:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -O2
+    dependencies:
+    - mindra
+    when:
+    - condition: false
+      other-modules: Paths_mindra
+
+tests:
+  mindra-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - mindra
+
+benchmarks:
+  mindra-benchmark:
+    main: bench.hs
+    source-dirs: benchmark
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - mindra
+    - criterion

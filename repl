@@ -1,0 +1,2 @@
+#!/usr/bin/env zsh
+stack ghci --ghci-options -fno-ghci-sandbox
