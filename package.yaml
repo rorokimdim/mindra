@@ -80,7 +80,7 @@ executables:
 
 tests:
   mindra-test:
-    main:                Spec.hs
+    main:                test.hs
     source-dirs:         test
     ghc-options:
     - -threaded
@@ -88,6 +88,11 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - mindra
+    - quickcheck-instances
+    - raw-strings-qq
+    - tasty
+    - tasty-hunit
+    - tasty-quickcheck
 
 benchmarks:
   mindra-benchmark:

@@ -109,14 +109,7 @@ pConfiguration cfg = do
     Just finalCfg -> return finalCfg
     Nothing       -> do
       newCfg <- choice
-        [ pColor cfg
-        , pMode cfg
-        , pWindow cfg
-        , pColor cfg
-        , pStepsPerSecond cfg
-        , pNoEvent cfg
-        , pNoStep cfg
-        ]
+        [pColor cfg, pMode cfg, pWindow cfg, pStepsPerSecond cfg, pNoEvent cfg, pNoStep cfg]
       pConfiguration newCfg
 
 pGlossConfiguration :: Parser Configuration
