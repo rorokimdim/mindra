@@ -116,3 +116,9 @@ PICTURE Circle 100
 Note: Each command should be followed by a blank line.
 
 Hit `ESC` to close window.
+
+# Credits
+
+1. [Haskell](https://www.haskell.org/)
+2. [Diagrams](https://diagrams.github.io/) and [Gloss](http://gloss.ouroborus.net/)
+3. All of these [libraries](https://github.com/rorokimdim/mindra/blob/220050cbc0f360b6c2322b501a43cf3f7f02133f/package.yaml) and all the things they depend on
