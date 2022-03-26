@@ -67,6 +67,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libghc-openglraw-dev
+          sudo apt-get install -y libghc-gluraw-dev
 
       - if: matrix.os != 'windows-latest'
         name: Build artifact for ubuntu-latest / macOS-latest
