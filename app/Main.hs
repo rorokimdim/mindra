@@ -2,6 +2,7 @@ module Main where
 
 import Control.Concurrent (threadDelay)
 import Data.Maybe (fromMaybe)
+import System.Environment (getArgs)
 import System.Exit (exitSuccess)
 import System.IO (isEOF, hFlush, stdout)
 import Text.Megaparsec (parseTest)
@@ -20,6 +21,7 @@ import qualified Mindra.Diagrams.Parser as MDP
 import qualified Mindra.Diagrams.Types as MDT (Configuration(..))
 import qualified Mindra.Gloss.Parser as MGP
 import qualified Mindra.Gloss.Types as MGT (Configuration(..), Mode(..))
+import qualified Version
 
 import Mindra.Parser.Configuration (MindraConfiguration(..), parseConfiguration)
 
@@ -192,9 +194,14 @@ writeAndReadMessageForTag tag body expectedTag = do
 
 main :: IO ()
 main = do
-  body <- writeAndReadMessageForTag "READY" "INIT" "INIT"
-  case parseConfiguration body of
-    Left err -> do
-      writeMessage "FAIL" err
-      main
-    Right cfg -> run cfg
+  args <- getArgs
+  process args
+ where
+  process [] = do
+    body <- writeAndReadMessageForTag "READY" "INIT" "INIT"
+    case parseConfiguration body of
+      Left err -> do
+        writeMessage "FAIL" err
+        main
+      Right cfg -> run cfg
+  process xs | head xs == "-v" || head xs == "--version" = putStrLn Version.appVersion
