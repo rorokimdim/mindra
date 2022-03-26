@@ -20,6 +20,42 @@ Most of the `gloss` features are supported. We should be able to use `mindra` fo
 
 See [mindra-clj-gloss](https://github.com/rorokimdim/mindra-clj#gloss) for some examples.
 
+# Installation
+
+## Linux and Mac
+
+Install:
+
+```bash
+brew install rorokimdim/brew/mindra
+```
+
+Upgrade:
+
+```bash
+brew upgrade mindra
+```
+
+Uninstall:
+
+```bash
+brew uninstall mindra
+```
+
+## Windows
+
+Binaries are available at [releases](https://github.com/rorokimdim/mindra/releases).
+
+## Others
+
+No pre-built binaries available at this time. We will need to build from source using `stack install` or `cabal install`.
+
+Install [stack](https://docs.haskellstack.org/en/stable/README/), clone this repository and run the following in repository directory.
+
+```bash
+stack install
+```
+
 # Basic usage
 
 A. Start mindra command
