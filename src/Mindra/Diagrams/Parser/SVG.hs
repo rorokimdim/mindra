@@ -545,8 +545,8 @@ pPolygonRegular = do
   pWhiteSpace
   n <- L.decimal
   pWhiteSpace
-  radius <- pDouble
-  return $ D.regPoly n radius
+  length <- pDouble
+  return $ D.regPoly n length
 
 pPolygonSides :: Parser SVG
 pPolygonSides = do
@@ -554,8 +554,8 @@ pPolygonSides = do
   pWhiteSpace
   angles <- pList pDouble
   optional pWhiteSpace
-  radii <- pList pDouble
-  return $ D.polygon (D.with D.& D.polyType D..~ D.PolySides (map (D.@@ D.deg) angles) radii)
+  lengths <- pList pDouble
+  return $ D.polygon (D.with D.& D.polyType D..~ D.PolySides (map (D.@@ D.deg) angles) lengths)
 
 pPolygonPolar :: Parser SVG
 pPolygonPolar = do
