@@ -25,6 +25,7 @@ defaultConfiguration = Configuration
   , _windowX         = 10
   , _windowY         = 10
   , _windowTitle     = "Mindra"
+  , _fullScreen      = False
   , _mode            = Static
   , _stepsPerSecond  = 50
   , _backgroundColor = makeColorI 255 255 255 255
@@ -53,6 +54,12 @@ pWindow cfg = do
     , _windowY      = y
     , _windowTitle  = title
     }
+
+pFullScreen :: Configuration -> Parser Configuration
+pFullScreen cfg = do
+  optional pWhiteSpace
+  _ <- string "FullScreen"
+  return $ cfg { _fullScreen = True }
 
 pMode :: Configuration -> Parser Configuration
 pMode cfg = do
@@ -109,7 +116,14 @@ pConfiguration cfg = do
     Just finalCfg -> return finalCfg
     Nothing       -> do
       newCfg <- choice
-        [pColor cfg, pMode cfg, pWindow cfg, pStepsPerSecond cfg, pNoEvent cfg, pNoStep cfg]
+        [ pColor cfg
+        , pMode cfg
+        , pWindow cfg
+        , pFullScreen cfg
+        , pStepsPerSecond cfg
+        , pNoEvent cfg
+        , pNoStep cfg
+        ]
       pConfiguration newCfg
 
 pGlossConfiguration :: Parser Configuration

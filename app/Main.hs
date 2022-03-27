@@ -94,7 +94,10 @@ worldToPicture w = do
 
 run :: MindraConfiguration -> IO ()
 run (GlossConfiguration MGT.Configuration {..}) = do
-  let display = G.InWindow _windowTitle (_windowWidth, _windowHeight) (_windowX, _windowY)
+  let
+    display = if _fullScreen
+      then G.FullScreen
+      else G.InWindow _windowTitle (_windowWidth, _windowHeight) (_windowX, _windowY)
   if _mode == MGT.Interactive && _noEvent
     then G.simulateIO
       display
