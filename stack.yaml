@@ -45,6 +45,7 @@ extra-deps:
 - diagrams-contrib-1.4.4
 - diagrams-core-1.5.0
 - diagrams-lib-1.4.4
+- diagrams-rasterific-1.4.2.1
 - diagrams-svg-1.4.3
 - active-0.2.0.15
 - dual-tree-0.2.3.0

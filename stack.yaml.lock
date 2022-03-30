@@ -33,6 +33,13 @@ packages:
   original:
     hackage: diagrams-lib-1.4.4
 - completed:
+    hackage: diagrams-rasterific-1.4.2.1@sha256:537148be9dd713d940779750f4f64f7b85f0e1340ba207a0414a49aba0b4a8ed,3202
+    pantry-tree:
+      size: 1387
+      sha256: 6232589931391502f06add397ea0859d40951f88bb40bceeddb6920ff2e2200a
+  original:
+    hackage: diagrams-rasterific-1.4.2.1
+- completed:
     hackage: diagrams-svg-1.4.3@sha256:407ff78cb7bd1f44c68b0059036186f17a281a053901e29d0139ab151e703247,3159
     pantry-tree:
       size: 475

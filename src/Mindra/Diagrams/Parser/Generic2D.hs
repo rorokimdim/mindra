@@ -1,4 +1,4 @@
-module Mindra.Diagrams.Parser.SVG where
+module Mindra.Diagrams.Parser.Generic2D where
 
 import Control.Applicative
 import Control.Monad
@@ -12,6 +12,7 @@ import Text.Megaparsec.Error (ParseErrorBundle)
 
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
+import qualified Diagrams.Backend.Rasterific as Rasterific
 import qualified Diagrams.Backend.SVG as SVG
 import qualified Diagrams.Prelude as D
 import qualified System.IO.Unsafe as UIO
@@ -27,37 +28,30 @@ import Diagrams.TwoD.Types (mkP2, mkR2, P2, V2)
 import Mindra.Parser.Common
   (Parser, pBool, pDouble, pList, pWhiteSpace, pRGB, pRGBA, pStringLiteral)
 
-type SVG = D.Diagram SVG.B
-
-pAlignBottom :: Parser SVG
 pAlignBottom = do
   _ <- string "AlignBottom"
   pWhiteSpace
   d <- pDiagram
   return $ D.alignB d
 
-pAlignLeft :: Parser SVG
 pAlignLeft = do
   _ <- string "AlignLeft"
   pWhiteSpace
   d <- pDiagram
   return $ D.alignL d
 
-pAlignRight :: Parser SVG
 pAlignRight = do
   _ <- string "AlignRight"
   pWhiteSpace
   d <- pDiagram
   return $ D.alignR d
 
-pAlignTop :: Parser SVG
 pAlignTop = do
   _ <- string "AlignTop"
   pWhiteSpace
   d <- pDiagram
   return $ D.alignT d
 
-pAlignX :: Parser SVG
 pAlignX = do
   _ <- string "AlignX"
   pWhiteSpace
@@ -66,7 +60,6 @@ pAlignX = do
   d <- pDiagram
   return $ D.alignX n d
 
-pAlignY :: Parser SVG
 pAlignY = do
   _ <- string "AlignY"
   pWhiteSpace
@@ -75,7 +68,6 @@ pAlignY = do
   d <- pDiagram
   return $ D.alignY n d
 
-pArrowAt :: Parser SVG
 pArrowAt = do
   _ <- string "ArrowAt"
   pWhiteSpace
@@ -88,7 +80,6 @@ pArrowAt = do
     Just o  -> D.arrowAt' o p v
     Nothing -> D.arrowAt p v
 
-pArrowBetween :: Parser SVG
 pArrowBetween = do
   _ <- string "ArrowBetween"
   pWhiteSpace
@@ -101,7 +92,6 @@ pArrowBetween = do
     Just o  -> D.arrowBetween' o p1 p2
     Nothing -> D.arrowBetween p1 p2
 
-pArrowConnect :: Parser SVG
 pArrowConnect = do
   _ <- string "ArrowConnect"
   pWhiteSpace
@@ -116,7 +106,6 @@ pArrowConnect = do
     Just o  -> D.connect' o n1 n2 d
     Nothing -> D.connect n1 n2 d
 
-pArrowConnectOutside :: Parser SVG
 pArrowConnectOutside = do
   _ <- string "ArrowConnectOutside"
   pWhiteSpace
@@ -131,7 +120,6 @@ pArrowConnectOutside = do
     Just o  -> D.connectOutside' o n1 n2 d
     Nothing -> D.connectOutside n1 n2 d
 
-pArrowConnectPerim :: Parser SVG
 pArrowConnectPerim = do
   _ <- string "ArrowConnectPerim"
   pWhiteSpace
@@ -243,7 +231,6 @@ pArrowOpts = do
     D.%~ (D.fc tc . D.opacity (fromIntegral ta / 255))
     )
 
-pBackground :: Parser SVG
 pBackground = do
   _ <- string "Background"
   pWhiteSpace
@@ -253,7 +240,6 @@ pBackground = do
   let c = sRGB24 (fromIntegral r) (fromIntegral g) (fromIntegral b)
   return $ bg c d
 
-pBackgroundFrame :: Parser SVG
 pBackgroundFrame = do
   _ <- string "BackgroundFrame"
   pWhiteSpace
@@ -265,7 +251,6 @@ pBackgroundFrame = do
   let c = sRGB24 (fromIntegral r) (fromIntegral g) (fromIntegral b)
   return $ bgFrame p c d
 
-pBeside :: Parser SVG
 pBeside = do
   _ <- string "Beside"
   pWhiteSpace
@@ -277,14 +262,12 @@ pBeside = do
   d2 <- pDiagram
   return $ beside (mkR2 x y) d1 d2
 
-pBSpline :: Parser SVG
 pBSpline = do
   _ <- string "BSpline"
   pWhiteSpace
   ps <- pList pPoint
   return $ D.bspline ps
 
-pCat :: Parser SVG
 pCat = do
   _ <- string "Cat"
   pWhiteSpace
@@ -295,35 +278,30 @@ pCat = do
   ds <- pList pDiagram
   return $ cat (mkR2 x y) ds
 
-pCenterX :: Parser SVG
 pCenterX = do
   _ <- string "CenterX"
   pWhiteSpace
   d <- pDiagram
   return $ D.centerX d
 
-pCenterXY :: Parser SVG
 pCenterXY = do
   _ <- string "CenterXY"
   pWhiteSpace
   d <- pDiagram
   return $ D.centerXY d
 
-pCenterY :: Parser SVG
 pCenterY = do
   _ <- string "CenterY"
   pWhiteSpace
   d <- pDiagram
   return $ D.centerY d
 
-pCircle :: Parser SVG
 pCircle = do
   _ <- string "Circle"
   pWhiteSpace
   radius <- pDouble
   return $ D.circle radius
 
-pCubicSpline :: Parser SVG
 pCubicSpline = do
   _ <- string "CubicSpline"
   pWhiteSpace
@@ -332,7 +310,6 @@ pCubicSpline = do
   ps <- pList pPoint
   return $ D.cubicSpline closed ps
 
-pDashingG :: Parser SVG
 pDashingG = do
   _ <- string "DashingG"
   optional pWhiteSpace
@@ -343,7 +320,6 @@ pDashingG = do
   d <- pDiagram
   return $ D.dashingG ns n d
 
-pDashingL :: Parser SVG
 pDashingL = do
   _ <- string "DashingL"
   pWhiteSpace
@@ -354,7 +330,6 @@ pDashingL = do
   d <- pDiagram
   return $ D.dashingL ns n d
 
-pDashingN :: Parser SVG
 pDashingN = do
   _ <- string "DashingN"
   pWhiteSpace
@@ -365,7 +340,6 @@ pDashingN = do
   d <- pDiagram
   return $ D.dashingN ns n d
 
-pEllipse :: Parser SVG
 pEllipse = do
   _ <- string "Ellipse"
   pWhiteSpace
@@ -374,7 +348,6 @@ pEllipse = do
     then fail $ "eccentricity of an ellipse must be >= 0 and < 1; got " <> show eccentricity
     else return $ D.ellipse eccentricity
 
-pEllipseXY :: Parser SVG
 pEllipseXY = do
   _ <- string "EllipseXY"
   pWhiteSpace
@@ -383,7 +356,6 @@ pEllipseXY = do
   radiusY <- pDouble
   return $ D.ellipseXY radiusX radiusY
 
-pFillColor :: Parser SVG
 pFillColor = do
   _ <- choice [string "FillColor", string "FillColour"]
   pWhiteSpace
@@ -394,7 +366,6 @@ pFillColor = do
   let ca = withOpacity c $ fromIntegral a / 255
   return $ D.fillColor ca d
 
-pFillOpacity :: Parser SVG
 pFillOpacity = do
   _ <- string "FillOpacity"
   pWhiteSpace
@@ -403,7 +374,6 @@ pFillOpacity = do
   d <- pDiagram
   return $ D.fillOpacity a d
 
-pFontSize :: Parser SVG
 pFontSize = do
   _ <- string "FontSize"
   pWhiteSpace
@@ -412,21 +382,18 @@ pFontSize = do
   d <- pDiagram
   return $ D.fontSizeL s d
 
-pHRule :: Parser SVG
 pHRule = do
   _ <- string "HRule"
   pWhiteSpace
   length <- pDouble
   return $ D.hrule length
 
-pHCat :: Parser SVG
 pHCat = do
   _ <- string "HCat"
   optional pWhiteSpace
   ds <- pList pDiagram
   return $ hcat ds
 
-pHSep :: Parser SVG
 pHSep = do
   _ <- string "HSep"
   pWhiteSpace
@@ -435,7 +402,6 @@ pHSep = do
   ds <- pList pDiagram
   return $ hsep sep ds
 
-pImage :: Parser SVG
 pImage = do
   _ <- string "Image"
   pWhiteSpace
@@ -449,21 +415,18 @@ pImage = do
     Left  estr -> fail estr
     Right img  -> return $ D.sized (D.dims2D width height) (D.image img)
 
-pLine :: Parser SVG
 pLine = do
   _ <- string "Line"
   optional pWhiteSpace
   vs <- pList pPoint
   return $ D.fromVertices vs
 
-pLineCloseLoop :: Parser SVG
 pLineCloseLoop = do
   _ <- string "LineCloseLoop"
   optional pWhiteSpace
   vs <- pList pPoint
   return $ D.strokeLoop $ D.closeLine $ D.fromVertices vs
 
-pLineColor :: Parser SVG
 pLineColor = do
   _ <- choice [string "LineColor", string "LineColour"]
   pWhiteSpace
@@ -474,14 +437,12 @@ pLineColor = do
   let ca = withOpacity c $ fromIntegral a / 255
   return $ D.lineColor ca d
 
-pLineGlueLoop :: Parser SVG
 pLineGlueLoop = do
   _ <- string "LineGlueLoop"
   optional pWhiteSpace
   vs <- pList pPoint
   return $ D.strokeLoop $ D.glueLine $ D.fromVertices vs
 
-pLineWidthG :: Parser SVG
 pLineWidthG = do
   _ <- string "LineWidthG"
   pWhiteSpace
@@ -490,7 +451,6 @@ pLineWidthG = do
   d <- pDiagram
   return $ D.lwG w d
 
-pLineWidthL :: Parser SVG
 pLineWidthL = do
   _ <- string "LineWidthL"
   pWhiteSpace
@@ -499,7 +459,6 @@ pLineWidthL = do
   d <- pDiagram
   return $ D.lwL w d
 
-pLineWidthN :: Parser SVG
 pLineWidthN = do
   _ <- string "LineWidthN"
   pWhiteSpace
@@ -508,7 +467,6 @@ pLineWidthN = do
   d <- pDiagram
   return $ D.lwN w d
 
-pNamed :: Parser SVG
 pNamed = do
   _ <- string "Named"
   pWhiteSpace
@@ -517,7 +475,6 @@ pNamed = do
   d <- pDiagram
   return $ D.named name d
 
-pPad :: Parser SVG
 pPad = do
   _ <- string "Pad"
   pWhiteSpace
@@ -539,7 +496,6 @@ pPoint = do
   _ <- string "]"
   return $ mkP2 f1 f2
 
-pPolygonRegular :: Parser SVG
 pPolygonRegular = do
   _ <- string "PolygonRegular"
   pWhiteSpace
@@ -548,7 +504,6 @@ pPolygonRegular = do
   length <- pDouble
   return $ D.regPoly n length
 
-pPolygonSides :: Parser SVG
 pPolygonSides = do
   _ <- string "PolygonSides"
   pWhiteSpace
@@ -557,7 +512,6 @@ pPolygonSides = do
   lengths <- pList pDouble
   return $ D.polygon (D.with D.& D.polyType D..~ D.PolySides (map (D.@@ D.deg) angles) lengths)
 
-pPolygonPolar :: Parser SVG
 pPolygonPolar = do
   _ <- string "PolygonPolar"
   pWhiteSpace
@@ -566,7 +520,6 @@ pPolygonPolar = do
   radii <- pList pDouble
   return $ D.polygon (D.with D.& D.polyType D..~ D.PolyPolar (map (D.@@ D.deg) angles) radii)
 
-pPosition :: Parser SVG
 pPosition = do
   _ <- string "Position"
   optional pWhiteSpace
@@ -575,7 +528,6 @@ pPosition = do
   ds <- pList pDiagram
   return $ atPoints ps ds
 
-pRectangle :: Parser SVG
 pRectangle = do
   _ <- string "Rectangle"
   pWhiteSpace
@@ -584,21 +536,18 @@ pRectangle = do
   height <- pDouble
   return $ D.rect width height
 
-pReflectX :: Parser SVG
 pReflectX = do
   _ <- string "ReflectX"
   pWhiteSpace
   d <- pDiagram
   return $ D.reflectX d
 
-pReflectY :: Parser SVG
 pReflectY = do
   _ <- string "ReflectY"
   pWhiteSpace
   d <- pDiagram
   return $ D.reflectY d
 
-pStrokeLine :: Parser SVG
 pStrokeLine = do
   _ <- string "StrokeLine"
   optional pWhiteSpace
@@ -606,7 +555,6 @@ pStrokeLine = do
   let line = D.fromVertices vs
   return $ D.strokeLine line
 
-pStrokeOpacity :: Parser SVG
 pStrokeOpacity = do
   _ <- string "StrokeOpacity"
   pWhiteSpace
@@ -626,14 +574,12 @@ pVector = do
   _ <- string "]"
   return $ mkR2 f1 f2
 
-pVCat :: Parser SVG
 pVCat = do
   _ <- string "VCat"
   optional pWhiteSpace
   ds <- pList pDiagram
   return $ vcat ds
 
-pVSep :: Parser SVG
 pVSep = do
   _ <- string "VSep"
   pWhiteSpace
@@ -642,7 +588,6 @@ pVSep = do
   ds <- pList pDiagram
   return $ vsep sep ds
 
-pRotate :: Parser SVG
 pRotate = do
   _ <- string "Rotate"
   pWhiteSpace
@@ -651,7 +596,6 @@ pRotate = do
   d <- pDiagram
   return $ D.rotate (degrees D.@@ D.deg) d
 
-pRotateBy :: Parser SVG
 pRotateBy = do
   _ <- string "RotateBy"
   pWhiteSpace
@@ -660,7 +604,6 @@ pRotateBy = do
   d <- pDiagram
   return $ D.rotateBy f d
 
-pRoundedRectangle :: Parser SVG
 pRoundedRectangle = do
   _ <- string "RoundedRectangle"
   pWhiteSpace
@@ -671,7 +614,6 @@ pRoundedRectangle = do
   radius <- pDouble
   return $ D.roundedRect width height radius
 
-pScale :: Parser SVG
 pScale = do
   _ <- string "Scale"
   pWhiteSpace
@@ -682,40 +624,34 @@ pScale = do
   d <- pDiagram
   return $ D.scaleY sy $ D.scaleX sx d
 
-pShowEnvelope :: Parser SVG
 pShowEnvelope = do
   _ <- string "ShowEnvelope"
   pWhiteSpace
   d <- pDiagram
   return $ showEnvelope d
 
-pShowOrigin :: Parser SVG
 pShowOrigin = do
   _ <- string "ShowOrigin"
   pWhiteSpace
   d <- pDiagram
   return $ showOrigin d
 
-pSuperimpose :: Parser SVG
 pSuperimpose = do
   optional $ string "Superimpose"
   optional pWhiteSpace
   ds <- pList pDiagram
   return $ mconcat ds
 
-pSquare :: Parser SVG
 pSquare = do
   _ <- string "Square"
   pWhiteSpace
   length <- pDouble
   return $ D.square length
 
-pText :: Parser SVG
 pText = do
   s <- pStringLiteral
   return $ D.text s
 
-pTranslate :: Parser SVG
 pTranslate = do
   _ <- string "Translate"
   pWhiteSpace
@@ -726,27 +662,26 @@ pTranslate = do
   d <- pDiagram
   return $ D.translate (mkR2 x y) d
 
-pTriangle :: Parser SVG
 pTriangle = do
   _ <- string "Triangle"
   pWhiteSpace
   length <- pDouble
   return $ D.triangle length
 
-pUnitCircle :: Parser SVG
-pUnitCircle = D.unitCircle <$ "UnitCircle"
+pUnitCircle = do
+  _ <- string "UnitCircle"
+  return D.unitCircle
 
-pUnitSquare :: Parser SVG
-pUnitSquare = D.unitSquare <$ "UnitSquare"
+pUnitSquare = do
+  _ <- string "UnitSquare"
+  return D.unitSquare
 
-pVRule :: Parser SVG
 pVRule = do
   _ <- string "VRule"
   pWhiteSpace
   length <- pDouble
   return $ D.vrule length
 
-pDiagram :: Parser SVG
 pDiagram = do
   optional pWhiteSpace
   p <- choice
@@ -819,5 +754,8 @@ pDiagram = do
   optional pWhiteSpace
   return p
 
-parse :: Text -> Either (ParseErrorBundle Text Void) SVG
-parse = runParser pDiagram "source"
+parseSVG :: Text -> Either (ParseErrorBundle Text Void) (D.Diagram SVG.B)
+parseSVG = runParser pDiagram "source"
+
+parseRasterific :: Text -> Either (ParseErrorBundle Text Void) (D.Diagram Rasterific.B)
+parseRasterific = runParser pDiagram "source"

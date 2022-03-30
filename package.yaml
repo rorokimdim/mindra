@@ -25,6 +25,7 @@ dependencies:
 - diagrams
 - diagrams-core
 - diagrams-lib
+- diagrams-rasterific
 - diagrams-svg
 - gloss
 - gloss-juicy

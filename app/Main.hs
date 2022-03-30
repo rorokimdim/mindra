@@ -18,7 +18,7 @@ import qualified Graphics.Gloss.Interface.IO.Simulate as G
 
 import qualified Mindra.Diagrams as MD
 import qualified Mindra.Diagrams.Parser as MDP
-import qualified Mindra.Diagrams.Types as MDT (Configuration(..))
+import qualified Mindra.Diagrams.Types as MDT (Configuration(..), Output(..))
 import qualified Mindra.Gloss.Parser as MGP
 import qualified Mindra.Gloss.Types as MGT (Configuration(..), Mode(..))
 import qualified Version
@@ -122,13 +122,32 @@ run (GlossConfiguration MGT.Configuration {..}) = do
             writeMessage "FAIL" $ T.pack (errorBundlePretty err)
             main
           Right p -> G.display display _backgroundColor p
-run (DiagramsConfiguration MDT.Configuration {..}) = do
+run (DiagramsConfiguration MDT.Configuration { _output = MDT.SVGText, ..}) = do
   body <- writeAndReadMessageForTag "READY" "SVG" "SVG"
   case MDP.parseSVG body of
     Left err -> do
       writeMessage "FAIL" $ T.pack (errorBundlePretty err)
       main
     Right svg -> writeMessage "SVG" (MD.svgToText svg _width _height)
+run (DiagramsConfiguration MDT.Configuration { _output = MDT.SVGFile filePath, ..}) = do
+  body <- writeAndReadMessageForTag "READY" "SVG" "SVG"
+  case MDP.parseSVG body of
+    Left err -> do
+      writeMessage "FAIL" $ T.pack (errorBundlePretty err)
+      main
+    Right svg -> do
+      let svgText = MD.svgToText svg _width _height
+      TIO.writeFile filePath svgText
+      writeMessage "SVG" svgText
+run (DiagramsConfiguration MDT.Configuration { _output = MDT.RasterFile filePath, ..}) = do
+  body <- writeAndReadMessageForTag "READY" "RASTER" "RASTER"
+  case MDP.parseRasterific body of
+    Left err -> do
+      writeMessage "FAIL" $ T.pack (errorBundlePretty err)
+      main
+    Right raster -> do
+      MD.writeRasterImageToFile raster _width _height filePath
+      writeMessage "RASTER" (T.pack filePath)
 
 isComment :: T.Text -> Bool
 isComment t = T.isPrefixOf "#" t || T.isPrefixOf "--" t || T.isPrefixOf ";" t
