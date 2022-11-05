@@ -2,10 +2,10 @@ module Mindra.Parser.Configuration where
 
 import qualified Data.Text as T
 
-import qualified Mindra.Gloss.Parser as GP
 import qualified Mindra.Diagrams.Parser as DP
-import qualified Mindra.Gloss.Types as GT (Configuration(..))
 import qualified Mindra.Diagrams.Types as DT (Configuration(..))
+import qualified Mindra.Gloss.Parser as GP
+import qualified Mindra.Gloss.Types as GT (Configuration(..))
 
 import Text.Megaparsec.Error (errorBundlePretty)
 

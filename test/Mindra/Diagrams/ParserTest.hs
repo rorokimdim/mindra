@@ -4,8 +4,8 @@ import Data.Either (isLeft, isRight)
 
 import qualified Text.RawString.QQ as QQ
 
-import Mindra.Diagrams.Parser (parseConfiguration, parseSVG)
 import Mindra.Diagrams (svgToText)
+import Mindra.Diagrams.Parser (parseConfiguration, parseSVG)
 
 import Test.Tasty
 import Test.Tasty.HUnit

@@ -1,24 +1,20 @@
 module Mindra.Gloss.Parser.Picture where
 
 import Control.Applicative
-import Control.Monad
 
 import Data.Text (Text)
 import Data.Void (Void)
-import Data.Maybe (fromMaybe)
-import Text.Megaparsec (choice, optional, runParser)
-import Text.Megaparsec.Char (char, string)
+import Text.Megaparsec (choice, runParser)
+import Text.Megaparsec.Char (string)
 import Text.Megaparsec.Error (ParseErrorBundle)
 
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import qualified Graphics.Gloss as G
 import qualified System.IO.Unsafe as UIO
 import qualified Text.Megaparsec.Char.Lexer as L
 
 import qualified Mindra.Gloss.BitmapStore as BitmapStore
 
-import Mindra.Parser.Common (Parser, pFloat, pList, pWhiteSpace, pRGBA, pStringLiteral)
+import Mindra.Parser.Common (Parser, pFloat, pList, pRGBA, pStringLiteral, pWhiteSpace)
 
 pBlank :: Parser G.Picture
 pBlank = G.Blank <$ string "Blank"

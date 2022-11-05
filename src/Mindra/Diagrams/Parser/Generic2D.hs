@@ -1,17 +1,13 @@
 module Mindra.Diagrams.Parser.Generic2D where
 
 import Control.Applicative
-import Control.Monad
 
 import Data.Text (Text)
 import Data.Void (Void)
-import Data.Maybe (fromMaybe)
-import Text.Megaparsec (choice, optional, runParser)
-import Text.Megaparsec.Char (char, string)
+import Text.Megaparsec (choice, runParser)
+import Text.Megaparsec.Char (string)
 import Text.Megaparsec.Error (ParseErrorBundle)
 
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import qualified Diagrams.Backend.Rasterific as Rasterific
 import qualified Diagrams.Backend.SVG as SVG
 import qualified Diagrams.Prelude as D
@@ -20,13 +16,13 @@ import qualified Text.Megaparsec.Char.Lexer as L
 
 import Data.Colour (withOpacity)
 import Data.Colour.SRGB (sRGB24)
-import Diagrams.Combinators (appends, beside, cat, pad, frame, atPoints)
+import Diagrams.Combinators (atPoints, beside, cat)
 import Diagrams.TwoD (showEnvelope, showOrigin)
-import Diagrams.TwoD.Combinators (hsep, vsep, hcat, vcat, padX, padY, bg, bgFrame)
-import Diagrams.TwoD.Types (mkP2, mkR2, P2, V2)
+import Diagrams.TwoD.Combinators (bg, bgFrame, hcat, hsep, padX, padY, vcat, vsep)
+import Diagrams.TwoD.Types (P2, V2, mkP2, mkR2)
 
 import Mindra.Parser.Common
-  (Parser, pBool, pDouble, pList, pWhiteSpace, pRGB, pRGBA, pStringLiteral)
+  (Parser, pBool, pDouble, pList, pRGB, pRGBA, pStringLiteral, pWhiteSpace)
 
 pAlignBottom = do
   _ <- string "AlignBottom"
@@ -754,8 +750,15 @@ pDiagram = do
   optional pWhiteSpace
   return p
 
+pAnimatedGif = do
+  optional pWhiteSpace
+  pList pDiagram
+
 parseSVG :: Text -> Either (ParseErrorBundle Text Void) (D.Diagram SVG.B)
 parseSVG = runParser pDiagram "source"
 
 parseRasterific :: Text -> Either (ParseErrorBundle Text Void) (D.Diagram Rasterific.B)
 parseRasterific = runParser pDiagram "source"
+
+parseAnimatedGif :: Text -> Either (ParseErrorBundle Text Void) [D.Diagram Rasterific.B]
+parseAnimatedGif = runParser pAnimatedGif "source"

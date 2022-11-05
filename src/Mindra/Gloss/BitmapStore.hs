@@ -1,11 +1,10 @@
 module Mindra.Gloss.BitmapStore
   ( clear
   , load
-  )
-where
+  ) where
 
+import Data.IORef (atomicModifyIORef', newIORef, readIORef)
 import Prelude hiding (lookup)
-import Data.IORef (IORef, newIORef, readIORef, atomicModifyIORef')
 
 import qualified System.IO.Unsafe as UIO
 
