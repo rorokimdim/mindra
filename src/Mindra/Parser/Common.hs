@@ -1,11 +1,10 @@
 module Mindra.Parser.Common where
 
 import Control.Applicative
-import Control.Monad
 
 import Data.Text (Text)
 import Data.Void (Void)
-import Text.Megaparsec (Parsec, between, choice, try, manyTill)
+import Text.Megaparsec (Parsec, choice, manyTill, try)
 import Text.Megaparsec.Char (char, space, string)
 
 import qualified Text.Megaparsec.Char.Lexer as L

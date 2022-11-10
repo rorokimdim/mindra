@@ -4,15 +4,13 @@ import Control.Concurrent (threadDelay)
 import Data.Maybe (fromMaybe)
 import System.Environment (getArgs)
 import System.Exit (exitSuccess)
-import System.IO (isEOF, hFlush, stdout)
-import Text.Megaparsec (parseTest)
+import System.IO (hFlush, isEOF, stdout)
 import Text.Megaparsec.Error (errorBundlePretty)
 import Text.Read (readMaybe)
 
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import qualified Graphics.Gloss as G
-import qualified Graphics.Gloss.Data.Picture as G
 import qualified Graphics.Gloss.Interface.IO.Game as G
 import qualified Graphics.Gloss.Interface.IO.Simulate as G
 
@@ -148,6 +146,16 @@ run (DiagramsConfiguration MDT.Configuration { _output = MDT.RasterFile filePath
     Right raster -> do
       MD.writeRasterImageToFile raster _width _height filePath
       writeMessage "RASTER" (T.pack filePath)
+run (DiagramsConfiguration MDT.Configuration { _output = MDT.AnimatedGifFile filePath looping delay, ..})
+  = do
+    body <- writeAndReadMessageForTag "READY" "ANIMATED-GIF" "ANIMATED-GIF"
+    case MDP.parseAnimatedGif body of
+      Left err -> do
+        writeMessage "FAIL" $ T.pack (errorBundlePretty err)
+        main
+      Right rasters -> do
+        MD.writeAnimatedGifToFile rasters _width _height looping delay filePath
+        writeMessage "ANIMATED-GIF" (T.pack filePath)
 
 isComment :: T.Text -> Bool
 isComment t = T.isPrefixOf "#" t || T.isPrefixOf "--" t || T.isPrefixOf ";" t

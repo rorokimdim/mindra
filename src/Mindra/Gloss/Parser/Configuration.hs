@@ -1,23 +1,20 @@
 module Mindra.Gloss.Parser.Configuration
   ( parse
-  )
-where
+  ) where
 
 import Control.Applicative
-import Control.Monad
 
 import Data.Void (Void)
 import Graphics.Gloss.Data.Color (makeColorI)
-import Text.Megaparsec (choice, optional, eof, runParser)
+import Text.Megaparsec (choice, eof, runParser)
 import Text.Megaparsec.Char (char, string)
 import Text.Megaparsec.Error (ParseErrorBundle)
 
 import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import qualified Text.Megaparsec.Char.Lexer as L
 
 import Mindra.Gloss.Types (Configuration(..), Mode(..))
-import Mindra.Parser.Common (Parser, pWhiteSpace, pStringLiteral)
+import Mindra.Parser.Common (Parser, pStringLiteral, pWhiteSpace)
 
 defaultConfiguration = Configuration
   { _windowWidth     = 512
