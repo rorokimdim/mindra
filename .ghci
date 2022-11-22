@@ -1,3 +1,5 @@
-:set -fwarn-unused-binds -fwarn-unused-imports
+:set -fno-warn-unused-binds
+:set -fwarn-unused-imports
 :set -isrc
-:load Main
+:set prompt  ">> "
+:def source readFile
